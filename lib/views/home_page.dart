@@ -14,6 +14,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final PostController _postController = Get.put(PostController());
   final TextEditingController _textController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,8 +43,18 @@ class _HomePageState extends State<HomePage> {
                     vertical: 10,
                   ),
                 ),
-                onPressed: () {},
-                child: const Text('Post'),
+                onPressed: () async {
+                  await _postController.createPost(
+                    content: _textController.text.trim(),
+                  );
+                  _textController.clear();
+                  _postController.getAllPosts();
+                },
+                child: Obx(() {
+                  return _postController.isLoading.value
+                      ? const CircularProgressIndicator()
+                      : const Text('Post');
+                }),
               ),
               const SizedBox(height: 30),
               const Text('Posts'),
